@@ -416,7 +416,7 @@
               &kp TAB    &kp TAB    &kp Q     &kp W      &kp E   &kp R                                                                   &kp T   &kp Y     &kp U     &kp I     &kp O      &kp P
               &kp ESC  &kp LSHFT    &kp A     &kp S      &kp D   &kp F                                                                   &kp G   &kp H     &kp J     &kp K     &kp L    &kp SQT
             &kp GRAVE  &kp LCTRL    &kp Z     &kp X      &kp C   &kp V  &kp LSHFT  &kp LCTRL    &lower  &kp LGUI  &kp RCTRL  &kp RSHFT   &kp B   &kp N     &kp M   &kp DOT  &kp FSLH  &kp PG_UP
- &magic LAYER_Magic 0   &kp HOME  &kp END  &kp LEFT  &kp RIGHT           &kp BSPC    &kp DEL  &kp LALT  &kp RALT    &kp RET  &kp SPACE          &kp UP  &kp DOWN  &kp LBKT  &kp RBKT  &kp PG_DN
+ &magic LAYER_Magic 0   &kp HOME  &kp END  &kp LEFT  &kp RIGHT          &kp SPACE    &kp DEL  &kp LALT  &kp RALT    &kp RET   &kp BSPC          &kp UP  &kp DOWN  &kp LBKT  &kp RBKT  &kp PG_DN
             >;
         };
 
