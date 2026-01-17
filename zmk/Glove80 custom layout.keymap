@@ -20,7 +20,7 @@
 #include <dt-bindings/zmk/rgb.h>
 
 /* On demand includes */
-
+#include <dt-bindings/zmk/pointing.h>
 
 /* Helper Macros, based on https://github.com/urob/zmk-helpers/ */
 
@@ -68,6 +68,10 @@
 #define LAYER_Lower 4
 #define LAYER_Magic 5
 #define LAYER_shift 6
+#define LAYER_mouse 7
+#define LAYER_mouse_slow 8
+#define LAYER_mouse_fast 9
+#define LAYER_mouse_warp 10
 
 /* To deal with the situation where there is no Lower layer, to keep &lower happy */
 #ifndef LAYER_Lower
@@ -314,6 +318,23 @@
 / {
     macros {
 
+        lm: lm {
+            label = "&LM";
+            compatible = "zmk,behavior-macro-two-param";
+            #binding-cells = <2>;
+            bindings = <&macro_press>
+                , <&macro_param_1to1>
+                , <&kp MACRO_PLACEHOLDER>
+                , <&macro_param_2to1>
+                , <&mo MACRO_PLACEHOLDER>
+                , <&macro_pause_for_release>
+                , <&macro_release>
+                , <&macro_param_1to1>
+                , <&kp MACRO_PLACEHOLDER>
+                , <&macro_param_2to1>
+                , <&mo MACRO_PLACEHOLDER>;
+        };
+
         tmux: tmux {
             label = "&TMUX";
             compatible = "zmk,behavior-macro-one-param";
@@ -330,23 +351,6 @@
                 , <&macro_press>
                 , <&macro_param_1to1>
                 , <&kp MACRO_PLACEHOLDER>;
-        };
-
-        lm: lm {
-            label = "&LM";
-            compatible = "zmk,behavior-macro-two-param";
-            #binding-cells = <2>;
-            bindings = <&macro_press>
-                , <&macro_param_1to1>
-                , <&kp MACRO_PLACEHOLDER>
-                , <&macro_param_2to1>
-                , <&mo MACRO_PLACEHOLDER>
-                , <&macro_pause_for_release>
-                , <&macro_release>
-                , <&macro_param_1to1>
-                , <&kp MACRO_PLACEHOLDER>
-                , <&macro_param_2to1>
-                , <&mo MACRO_PLACEHOLDER>;
         };
     };
 };
@@ -378,12 +382,12 @@
 
         layer_base {
             bindings = <
-               &kp F1    &kp F2       &kp F3       &kp F4        &kp F5                                                                                                                &kp F6       &kp F7       &kp F8    &kp F9    &kp F10
-            &kp EQUAL    &kp N1       &kp N2       &kp N3        &kp N4  &kp N5                                                                                          &kp N6        &kp N7       &kp N8       &kp N9    &kp N0  &kp MINUS
-              &kp TAB     &kp Q        &kp W        &kp F         &kp P   &kp B                                                                                           &kp J         &kp L        &kp U        &kp Y  &kp SEMI   &kp BSLH
-              &kp ESC     &kp A  &mod LGUI R  &mod LALT S  &mod LCTRL T   &kp G                                                                                           &kp M  &mod RCTRL N  &mod RALT E  &mod RGUI I     &kp O    &kp SQT
-            &kp GRAVE     &kp Z        &kp X        &kp C         &kp D   &kp V  &lm LSHFT LAYER_shift  &kp LCTRL    &lower  &kp LGUI  &kp RCTRL  &lm RSHFT LAYER_shift   &kp K         &kp H    &kp COMMA      &kp DOT  &kp FSLH  &kp PG_UP
- &magic LAYER_Magic 0  &kp HOME      &kp END     &kp LEFT     &kp RIGHT                       &kp BSPC    &kp DEL  &kp LALT  &kp RALT    &kp RET              &kp SPACE                &kp UP     &kp DOWN     &kp LBKT  &kp RBKT  &kp PG_DN
+               &kp F1    &kp F2       &kp F3       &kp F4        &kp F5                                                                                                                          &kp F6       &kp F7       &kp F8    &kp F9    &kp F10
+            &kp EQUAL    &kp N1       &kp N2       &kp N3        &kp N4  &kp N5                                                                                                    &kp N6        &kp N7       &kp N8       &kp N9    &kp N0  &kp MINUS
+              &kp TAB     &kp Q        &kp W        &kp F         &kp P   &kp B                                                                                                     &kp J         &kp L        &kp U        &kp Y  &kp SEMI   &kp BSLH
+              &kp ESC     &kp A  &mod LGUI R  &mod LALT S  &mod LCTRL T   &kp G                                                                                                     &kp M  &mod RCTRL N  &mod RALT E  &mod RGUI I     &kp O    &kp SQT
+            &kp GRAVE     &kp Z        &kp X        &kp C         &kp D   &kp V  &lm LSHFT LAYER_shift  &kp LCTRL    &lower  &kp LGUI            &kp RCTRL  &lm RSHFT LAYER_shift   &kp K         &kp H    &kp COMMA      &kp DOT  &kp FSLH  &kp PG_UP
+ &magic LAYER_Magic 0  &kp HOME      &kp END     &kp LEFT     &kp RIGHT                       &kp BSPC    &kp DEL  &kp LALT  &kp RALT  &lt LAYER_mouse RET              &kp SPACE                &kp UP     &kp DOWN     &kp LBKT  &kp RBKT  &kp PG_DN
             >;
         };
 
@@ -450,6 +454,50 @@
  &trans  &trans  &trans  &trans  &trans  &trans                                                            &trans  &trans  &trans  &trans  &trans  &trans
  &trans  &trans  &trans  &trans  &trans  &trans  &tmux RSHFT  &trans  &trans  &trans  &trans  &tmux LSHFT  &trans  &trans  &trans  &trans  &trans  &trans
  &trans  &trans  &trans  &trans  &trans               &trans  &trans  &trans  &trans  &trans       &trans          &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        layer_mouse {
+            bindings = <
+ &trans          &trans                &trans                &trans                &trans                                                                                        &trans                &trans                &trans           &trans    &trans
+ &trans          &trans                &trans                &trans                &trans  &trans                                                          &trans                &trans                &trans                &trans           &trans    &trans
+ &trans          &trans        &msc SCRL_LEFT          &mmv MOVE_UP       &msc SCRL_RIGHT  &trans                                                          &trans        &msc SCRL_LEFT          &msc SCRL_UP        &msc SCRL_DOWN  &msc SCRL_RIGHT    &trans
+ &trans    &msc SCRL_UP        &mmv MOVE_LEFT        &mmv MOVE_DOWN       &mmv MOVE_RIGHT  &trans                                                          &trans  &mo LAYER_mouse_warp  &mo LAYER_mouse_fast  &mo LAYER_mouse_slow           &trans    &trans
+ &trans  &msc SCRL_DOWN  &mo LAYER_mouse_slow  &mo LAYER_mouse_fast  &mo LAYER_mouse_warp  &trans  &mkp MCLK     &trans  &mkp MB5  &trans  &trans  &trans  &trans        &mmv MOVE_LEFT          &mmv MOVE_UP        &mmv MOVE_DOWN  &mmv MOVE_RIGHT    &trans
+ &trans          &trans                &trans                &trans                &trans          &mkp LCLK  &mkp RCLK  &mkp MB4  &trans  &trans  &trans                     &mkp LCLK             &mkp RCLK             &mkp MCLK         &mkp MB4  &mkp MB5
+            >;
+        };
+
+        layer_mouse_slow {
+            bindings = <
+ &trans  &trans  &trans  &trans  &trans                                                                  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        layer_mouse_fast {
+            bindings = <
+ &trans  &trans  &trans  &trans  &trans                                                                  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        layer_mouse_warp {
+            bindings = <
+ &trans  &trans  &trans  &trans  &trans                                                                  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans
             >;
         };
 
