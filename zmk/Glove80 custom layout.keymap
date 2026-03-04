@@ -335,8 +335,8 @@
                 , <&mo MACRO_PLACEHOLDER>;
         };
 
-        tmux: tmux {
-            label = "&TMUX";
+        tmuxr: tmuxr {
+            label = "&TMUXR";
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
             bindings = <&macro_release>
@@ -351,6 +351,18 @@
                 , <&macro_press>
                 , <&macro_param_1to1>
                 , <&kp MACRO_PLACEHOLDER>;
+        };
+
+        tmux: tmux {
+            label = "&TMUX";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press>
+                , <&kp LCTRL>
+                , <&macro_tap>
+                , <&kp B>
+                , <&macro_release>
+                , <&kp LCTRL>;
         };
     };
 };
@@ -372,7 +384,17 @@
 };
 
 /* Automatically generated combos definitions */
+/ {
+    combos {
+        compatible = "zmk,combos";
 
+        combo_tmux {
+            key-positions = <POS_LH_T1 POS_RH_T1>;
+            bindings = <&tmux>;
+            layers = <LAYER_base>;
+        };
+    };
+};
 
 /* Automatically generated keymap */
 / {
@@ -448,12 +470,12 @@
 
         layer_shift {
             bindings = <
- &trans  &trans  &trans  &trans  &trans                                                                            &trans  &trans  &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                            &trans  &trans  &trans  &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                            &trans  &trans  &trans  &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                            &trans  &trans  &trans  &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans  &tmux RSHFT  &trans  &trans  &trans  &trans  &tmux LSHFT  &trans  &trans  &trans  &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans               &trans  &trans  &trans  &trans  &trans       &trans          &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans                                                                              &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                              &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                              &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans                                                              &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans  &trans  &tmuxr RSHFT  &trans  &trans  &trans  &trans  &tmuxr LSHFT  &trans  &trans  &trans  &trans  &trans  &trans
+ &trans  &trans  &trans  &trans  &trans                &trans  &trans  &trans  &trans  &trans        &trans          &trans  &trans  &trans  &trans  &trans
             >;
         };
 
