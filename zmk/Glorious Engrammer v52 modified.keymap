@@ -3873,6 +3873,17 @@ behaviors {
     retro-tap; // tap on standalone hold
     #endif
   };
+  ttumb: thumb_layer_access_tmux {
+    compatible = "zmk,behavior-hold-tap";
+    flavor = THUMB_HOLDING_TYPE;
+    tapping-term-ms = <THUMB_HOLDING_TIME>;
+    quick-tap-ms = <THUMB_REPEAT_DECAY>; // enable repeat
+    #binding-cells = <2>;
+    bindings = <&mo>, <&tmux>;
+    #ifdef THUMB_FORGIVENESS
+    retro-tap; // tap on standalone hold
+    #endif
+  };
   stumb: thumb_layer_access_sticky_key_oneshot {
     compatible = "zmk,behavior-hold-tap";
     flavor = THUMB_HOLDING_TYPE;
@@ -4010,6 +4021,15 @@ behaviors {
 };
 
 macros {
+
+  ZMK_MACRO(tmux,
+    wait-ms = <0>;
+    tap-ms = <0>;
+    bindings
+      = <&macro_press &kp LCTL>
+      , <&macro_tap &kp B>
+      , <&macro_release &kp LCTL>;
+  )
 
   ZMK_MACRO(dot_dot,
     wait-ms = <0>;
@@ -10579,17 +10599,6 @@ macros {
 / {
     macros {
 
-        tmux: tmux {
-            label = "&TMUX";
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_press>
-                , <&kp LCTRL>
-                , <&macro_tap>
-                , <&kp B>
-                , <&macro_release>
-                , <&kp LCTRL>;
-        };
     };
 };
 
@@ -10616,8 +10625,8 @@ macros {
                 &none                         &kp N1                         &kp N2                         &kp N3                         &kp N4  &kp N5                                                                                                                                           &kp N6                          &kp N7                          &kp N8                          &kp N9                          &kp N0                         &none
               &kp TAB                          &kp Q                          &kp W                          &kp F                          &kp P   &kp B                                                                                                                                            &kp J                           &kp L                           &kp U                           &kp Y                        &kp SEMI                     &kp MINUS
               &kp ESC  &LeftPinky (A, LAYER_Colemak)  &LeftRingy (R, LAYER_Colemak)  &LeftMiddy (S, LAYER_Colemak)  &LeftIndex (T, LAYER_Colemak)   &kp G                                                                                                                                            &kp M  &RightIndex (N, LAYER_Colemak)  &RightMiddy (E, LAYER_Colemak)  &RightRingy (I, LAYER_Colemak)  &RightPinky (O, LAYER_Colemak)                       &kp SQT
-            &kp EQUAL                          &kp Z                          &kp X                          &kp C                          &kp D   &kp V   &sticky_key_modtap LSFT LSFT             &mo LAYER_Lower  &kp PG_UP    &thums_up  &thumb LAYER_Lower INSERT    &thumb LAYER_System TAB   &kp K                           &kp H                       &kp COMMA                         &kp DOT                        &kp FSLH  &sticky_key_modtap RSFT RSFT
- &magic LAYER_Magic 0                       &kp BSLH                   &parang_left                  &parang_right     &stumb LAYER_Function LSFT          &thumb LAYER_Cursor BACKSPACE  &thumb LAYER_Number DELETE  &kp PG_DN  &thums_down   &thumb LAYER_Mouse ENTER  &space LAYER_Symbol SPACE                                   &tmux                        &kp LBKT                        &kp RBKT                       &kp GRAVE          &magic LAYER_Magic 0
+            &kp EQUAL                          &kp Z                          &kp X                          &kp C                          &kp D   &kp V   &sticky_key_modtap LSFT LSFT             &mo LAYER_Lower  &kp PG_UP    &thums_up  &thumb LAYER_Lower INSERT      &ttumb LAYER_System 0   &kp K                           &kp H                       &kp COMMA                         &kp DOT                        &kp FSLH  &sticky_key_modtap RSFT RSFT
+ &magic LAYER_Magic 0                       &kp BSLH                   &parang_left                  &parang_right     &stumb LAYER_Function LSFT          &thumb LAYER_Cursor BACKSPACE  &thumb LAYER_Number DELETE  &kp PG_DN  &thums_down   &thumb LAYER_Mouse ENTER  &space LAYER_Symbol SPACE                 &stumb LAYER_World RSFT                        &kp LBKT                        &kp RBKT                       &kp GRAVE          &magic LAYER_Magic 0
             >;
         };
 
