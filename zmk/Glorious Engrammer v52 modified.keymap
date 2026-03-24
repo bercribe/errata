@@ -10808,12 +10808,12 @@ macros {
 
         layer_Function {
             bindings = <
-     &none               &none               &none               &none               &none                                                                                                                     &none         &none         &none          &none           &none
-     &none             &kp ESC             &kp INS         &kp LS(TAB)             &kp DEL       &none                                                                               &kp C_MEDIA_HOME     &kp C_PLAY    &kp C_PREV    &kp C_NEXT     &kp C_STOP     &kp C_EJECT
-     &none             &kp RET           &kp SPACE             &kp TAB            &kp BSPC  &kp K_CALC                                                                                     &kp K_CALC         &kp F7        &kp F8        &kp F9        &kp F10         &kp F13
- &sk LSHFT  &kp LEFT_PINKY_MOD  &kp LEFT_RINGY_MOD  &kp LEFT_MIDDY_MOD  &kp LEFT_INDEX_MOD   &kp K_WWW                                                                                      &kp K_WWW         &kp F4        &kp F5        &kp F6        &kp F11         &kp F14
-     &none         &select_all        &select_line        &select_word           &kp _FIND  &kp _FILES  &tog LAYER_Function   &none   &none  &kp C_PREV      &kp C_PP    &kp C_MUTE        &kp _FILES         &kp F1        &kp F2        &kp F3        &kp F12         &kp F15
-     &none           &kp _UNDO           &kp _REDO      &kp _FIND_PREV      &kp _FIND_NEXT                            &none   &none   &none  &kp C_NEXT  &kp C_VOL_DN  &kp C_VOL_UP                    &kp C_BRI_MAX  &kp C_BRI_UP  &kp C_BRI_DN  &kp C_BRI_MIN  &kp C_BRI_AUTO
+     &none               &none               &none               &none                &none                                                                                                        &none         &none         &none          &none           &none
+     &none             &kp ESC             &kp INS         &kp LS(TAB)              &kp DEL       &none                                                                  &kp C_MEDIA_HOME     &kp C_PLAY    &kp C_PREV    &kp C_NEXT     &kp C_STOP     &kp C_EJECT
+     &none             &kp RET           &kp SPACE             &kp TAB             &kp BSPC  &kp K_CALC                                                                        &kp K_CALC         &kp F7        &kp F8        &kp F9        &kp F10         &kp F13
+ &sk LSHFT  &kp LEFT_PINKY_MOD  &kp LEFT_RINGY_MOD  &kp LEFT_MIDDY_MOD   &kp LEFT_INDEX_MOD   &kp K_WWW                                                                         &kp K_WWW         &kp F4        &kp F5        &kp F6        &kp F11         &kp F14
+     &none         &select_all        &select_line        &select_word            &kp _FIND  &kp _FILES   &none   &none   &none  &kp C_PREV      &kp C_PP    &kp C_MUTE        &kp _FILES         &kp F1        &kp F2        &kp F3        &kp F12         &kp F15
+     &none           &kp _UNDO           &kp _REDO      &kp _FIND_PREV  &tog LAYER_Function               &none   &none   &none  &kp C_NEXT  &kp C_VOL_DN  &kp C_VOL_UP                    &kp C_BRI_MAX  &kp C_BRI_UP  &kp C_BRI_DN  &kp C_BRI_MIN  &kp C_BRI_AUTO
             >;
         };
 
@@ -10907,12 +10907,12 @@ macros {
 
         layer_Lower {
             bindings = <
-  &none               &none               &none               &none               &none                                                                                                                                                &none                &none                &none                &none   &none
-  &none               &none               &none               &none               &none         &none                                                                                                             &none                &none                &none                &none                &none   &none
-  &none           &kp KP_N1           &kp KP_N2           &kp KP_N3           &kp KP_N4     &kp KP_N5                                                                                                         &kp KP_N6            &kp KP_N7            &kp KP_N8            &kp KP_N9            &kp KP_N0   &none
-  &none  &sk LEFT_PINKY_MOD  &sk LEFT_RINGY_MOD  &sk LEFT_MIDDY_MOD  &sk LEFT_INDEX_MOD  &kp KP_MINUS                                                                                                      &kp KP_SLASH  &sk RIGHT_INDEX_MOD  &sk RIGHT_MIDDY_MOD  &sk RIGHT_RINGY_MOD  &sk RIGHT_PINKY_MOD   &none
-  &none         &kp KP_LPAR        &kp KP_COMMA          &kp KP_DOT         &kp KP_RPAR   &kp KP_PLUS  &tog LAYER_Function              &none  &kp RALT  &kp RALT             &none  &tog LAYER_System  &kp KP_MULTIPLY           &kp KP_NUM         &kp KP_CLEAR         &kp KP_EQUAL         &kp KP_ENTER   &none
-  &none               &none               &none               &none    &tog LAYER_Emoji                  &tog LAYER_Cursor  &tog LAYER_Number     &none     &none  &tog LAYER_Mouse  &tog LAYER_Symbol                      &tog LAYER_World                &none                &none                &none   &none
+  &none               &none               &none               &none                &none                                                                                                                                              &none                &none                &none                &none   &none
+  &none               &none               &none               &none                &none         &none                                                                                                           &none                &none                &none                &none                &none   &none
+  &none           &kp KP_N1           &kp KP_N2           &kp KP_N3            &kp KP_N4     &kp KP_N5                                                                                                       &kp KP_N6            &kp KP_N7            &kp KP_N8            &kp KP_N9            &kp KP_N0   &none
+  &none  &sk LEFT_PINKY_MOD  &sk LEFT_RINGY_MOD  &sk LEFT_MIDDY_MOD   &sk LEFT_INDEX_MOD  &kp KP_MINUS                                                                                                    &kp KP_SLASH  &sk RIGHT_INDEX_MOD  &sk RIGHT_MIDDY_MOD  &sk RIGHT_RINGY_MOD  &sk RIGHT_PINKY_MOD   &none
+  &none         &kp KP_LPAR        &kp KP_COMMA          &kp KP_DOT          &kp KP_RPAR   &kp KP_PLUS              &none              &none  &kp RALT  &kp RALT             &none  &tog LAYER_System  &kp KP_MULTIPLY           &kp KP_NUM         &kp KP_CLEAR         &kp KP_EQUAL         &kp KP_ENTER   &none
+  &none               &none               &none               &none  &tog LAYER_Function                &tog LAYER_Cursor  &tog LAYER_Number     &none     &none  &tog LAYER_Mouse  &tog LAYER_Symbol                      &tog LAYER_World                &none                &none                &none   &none
             >;
         };
 
