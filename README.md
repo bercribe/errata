@@ -1,9 +1,9 @@
-# scripts
+# eratta
 Collection of random scripts
 
-#### check_sync_conflicts
+#### check-sync-conflicts
 
-Usage: `python check_sync_conflicts.py <dir>`
+Usage: `./csc.py <dir>`
 
-Then, can do `find <dir> | grep sync-conflict | xargs -I %% rm %%`
+Then, can do `find <dir> | grep sync-conflict | xargs rm`
 
