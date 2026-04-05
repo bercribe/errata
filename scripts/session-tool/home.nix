@@ -3,11 +3,11 @@
   lib,
   ...
 }: let
-  cfg = config.local.programs.st;
+  cfg = config.programs.session-tool;
 in {
-  options.local = with lib;
+  options = with lib;
   with types; {
-    programs.st = {
+    programs.session-tool = {
       directories = mkOption {
         type = listOf str;
         default = ["$HOME"];
@@ -22,7 +22,7 @@ in {
   };
 
   config = {
-    xdg.configFile."st/st.env" = {
+    xdg.configFile."session-tool/session-tool.env" = {
       text = ''
         ST_DIRS=${lib.concatStringsSep ":" cfg.directories}
         ST_FD_FLAGS=${lib.concatStringsSep " " cfg.extraFdFlags}

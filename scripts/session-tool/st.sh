@@ -3,7 +3,7 @@
 # optionally takes an argument as the selected directory
 
 # shellcheck disable=1091
-source "${XDG_CONFIG_HOME:-$HOME/.config}/st/st.env" || true
+source "${XDG_CONFIG_HOME:-$HOME/.config}/session-tool/session-tool.env" || true
 
 IFS=: read -ra dirs <<< "$ST_DIRS"
 IFS=' ' read -ra fd_flags <<< "$ST_FD_FLAGS"
