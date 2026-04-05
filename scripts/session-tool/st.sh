@@ -24,7 +24,7 @@ if ! tmux has-session -t "$session_name"; then
     tmux new-session -ds "$session_name" -c "$path"
 fi
 
-if [[ -z $TMUX ]]; then
+if [[ -z ${TMUX:-} ]]; then
     tmux a -t "$session_name"
 else
     tmux switch-client -t "$session_name"
