@@ -5,7 +5,8 @@
 # shellcheck disable=1091
 source "${XDG_CONFIG_HOME:-$HOME/.config}/session-tool/session-tool.env" || true
 
-IFS=: read -ra dirs <<< "$ST_DIRS"
+IFS=: read -ra _dirs <<< "$ST_DIRS"
+readarray -t dirs < <(printf '%s\n' "${_dirs[@]}" | sort -u)
 IFS=' ' read -ra fd_flags <<< "$ST_FD_FLAGS"
 
 if [[ $# -eq 1 ]]; then
