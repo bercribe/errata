@@ -11,11 +11,25 @@
           value = f system;
         })
         systems);
+
+    scriptNames = builtins.attrNames (builtins.readDir ./scripts);
+    scriptPackages = pkgs:
+      builtins.listToAttrs (map (name: {
+          inherit name;
+          value = pkgs.callPackage ./scripts/${name} {};
+        })
+        scriptNames);
   in {
     packages = forAllSystems (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      check-sync-conflicts = pkgs.callPackage ./check-sync-conflicts {};
-    });
+    in
+      scriptPackages pkgs);
+
+    overlays.default = final: prev:
+      scriptPackages final;
+
+    homeModules = {
+      st = import ./scripts/st/home.nix;
+    };
   };
 }

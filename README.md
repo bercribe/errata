@@ -1,5 +1,6 @@
 # eratta
-Collection of random scripts
+
+## scripts
 
 #### check-sync-conflicts
 
