@@ -29,7 +29,7 @@
       scriptPackages final;
 
     homeModules = {
-      st = import ./scripts/st/home.nix;
+      st = import ./scripts/session-tool/home.nix;
     };
   };
 }
