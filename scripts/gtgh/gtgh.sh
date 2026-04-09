@@ -25,6 +25,8 @@ PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@") 
 eval set -- "$PARSED"
 
 path=.
+upstream=""
+line=""
 
 # now enjoy the options in order and nicely split until we see --
 while true; do
@@ -52,6 +54,7 @@ while true; do
     esac
 done
 
+abspath=""
 if [[ -f $path ]]; then
     abspath=$(realpath "$path")
     pushd "$(dirname "$path")" 1>/dev/null
