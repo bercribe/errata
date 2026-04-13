@@ -29,6 +29,7 @@
       scriptPackages final;
 
     homeModules = {
+      mirror = import ./scripts/mirror/home.nix;
       session-tool = import ./scripts/session-tool/home.nix;
     };
   };
