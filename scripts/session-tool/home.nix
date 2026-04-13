@@ -22,10 +22,10 @@ in {
   };
 
   config = {
-    xdg.configFile."session-tool/session-tool.env" = {
+    xdg.configFile."session-tool/session-tool.conf" = {
       text = ''
-        ST_DIRS=${lib.concatStringsSep ":" cfg.directories}
-        ST_FD_FLAGS=${lib.concatStringsSep " " cfg.extraFdFlags}
+        directories=${lib.concatStringsSep ":" cfg.directories}
+        fd_flags=${lib.concatStringsSep " " cfg.extraFdFlags}
       '';
     };
   };
