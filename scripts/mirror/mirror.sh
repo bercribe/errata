@@ -2,7 +2,7 @@
 # mirror - bind-mount a source directory to a target location
 # usage:
 #   mirror mount  <source> [<target>]  - bind-mount source into target base dir
-#   mirror umount <dir>                - unmount by source or target path
+#   mirror umount [-l] <dir>           - unmount by source or target path (-l for lazy)
 #   mirror status                      - show active mirrors
 #
 # Config: ~/.config/mirror/mirror.conf
@@ -15,7 +15,7 @@ CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/mirror/mirror.conf"
 usage() {
     echo "Usage:"
     echo "  mirror mount  <source> [<target>]  - bind-mount source into target dir"
-    echo "  mirror umount <dir>                - unmount by source or target path"
+    echo "  mirror umount [-l] <dir>           - unmount by source or target path (-l for lazy)"
     echo "  mirror status                      - show active mirrors"
     echo ""
     echo "Config: $CONFIG_FILE"
@@ -103,6 +103,11 @@ case "$cmd" in
         echo "Mirrored: $source_dir -> $target_dir"
         ;;
     umount)
+        umount_opts=()
+        if [[ "${1:-}" == "-l" ]]; then
+            umount_opts+=(--lazy)
+            shift
+        fi
         if [[ $# -ne 1 ]]; then
             echo "Error: umount requires <dir>"
             usage
@@ -111,7 +116,7 @@ case "$cmd" in
 
         if mountpoint -q "$dir" 2>/dev/null; then
             # Given path is itself a mountpoint — unmount directly
-            sudo umount "$dir"
+            sudo umount "${umount_opts[@]}" "$dir"
             rmdir "$dir" 2>/dev/null || true
             echo "Unmirrored: $dir"
         else
@@ -121,7 +126,7 @@ case "$cmd" in
                 echo "Error: no mirror found for: $dir"
                 exit 1
             fi
-            sudo umount "$target_dir"
+            sudo umount "${umount_opts[@]}" "$target_dir"
             rmdir "$target_dir" 2>/dev/null || true
             echo "Unmirrored: $dir -> $target_dir"
         fi
