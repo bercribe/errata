@@ -130,6 +130,7 @@ case "$cmd" in
         # Show bind mounts, including ZFS ones (which use pool[/subpath] in SOURCE)
         # grep for standard "bind" option or ZFS bracket notation in SOURCE
         output=$(findmnt --list --output TARGET,SOURCE,OPTIONS --noheadings | \
+            grep -vE "^\s*/(nix|sys|proc|dev|run)(/|\s)" | \
             grep -E 'bind|\[.+\]' || true)
         if [[ -z "$output" ]]; then
             echo "No active mirrors found."
