@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # vb.sh: ZFS version browser
-# Usage: vb.sh <file> [-n <count>]
+# Usage: zvb.sh <file> [-n <count>]
 
 set -euo pipefail
 

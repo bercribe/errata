@@ -135,25 +135,26 @@ fi
 
 echo "Found ${#conflicts[@]} remaining conflict file(s)."
 
+# shellcheck disable=SC2016
 printf '%s\n' "${conflicts[@]}" | fzf \
   --prompt="conflict > " \
   --header="enter: view diff | ctrl-o: keep original | ctrl-k: keep conflict | ctrl-e: vimdiff" \
-  --preview="bash -c 'preview_diff {}'" \
+  --preview='bash -c '\''preview_diff "$0"'\'' {}' \
   --preview-window="right:60%:wrap" \
-  --bind "enter:execute(bash -c 'preview_diff {}')" \
-  --bind "ctrl-o:execute(
-    echo 'Keep original and delete {}? [y/N]';
+  --bind 'enter:execute(bash -c '\''preview_diff "$0"'\'' {})' \
+  --bind 'ctrl-o:execute(
+    echo "Keep original and delete {}? [y/N]";
     read ans;
-    if [[ \$ans == y || \$ans == Y ]]; then
-      bash -c 'keep_original {}' && echo 'Done.';
+    if [[ $ans == y || $ans == Y ]]; then
+      bash -c '\''keep_original "$0"'\'' {} && echo "Done.";
     fi
-  )+reload(bash -c 'find_conflicts {}')" \
-  --bind "ctrl-k:execute(
-    echo 'Replace original with {}? [y/N]';
+  )+reload(bash -c '\''find_conflicts'\'')' \
+  --bind 'ctrl-k:execute(
+    echo "Replace original with {}? [y/N]";
     read ans;
-    if [[ \$ans == y || \$ans == Y ]]; then
-      bash -c 'keep_conflict {}' && echo 'Done.';
+    if [[ $ans == y || $ans == Y ]]; then
+      bash -c '\''keep_conflict "$0"'\'' {} && echo "Done.";
     fi
-  )+reload(bash -c 'find_conflicts {}')" \
-  --bind "ctrl-e:execute(bash -c 'edit_manual {}')+reload(bash -c 'find_conflicts {}')" \
+  )+reload(bash -c '\''find_conflicts'\'')' \
+  --bind 'ctrl-e:execute(bash -c '\''edit_manual "$0"'\'' {})+reload(bash -c '\''find_conflicts'\'')' \
   || true
