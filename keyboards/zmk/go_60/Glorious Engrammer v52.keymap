@@ -26,7 +26,9 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
 /* On demand includes */
+#include <dt-bindings/zmk/input_transform.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
 
 /* Helper Macros, based on https://github.com/urob/zmk-helpers/ */
 
@@ -192,7 +194,16 @@
 #endif
 
 /* Generated input processors */
-
+/ {
+    input_processors {
+        zip_click_to_right_click_mapper: zip_click_to_right_click_mapper {
+            compatible = "zmk,input-processor-code-mapper";
+            #input-processor-cells = <0>;
+            type = <INPUT_EV_KEY>;
+            map = <INPUT_BTN_0 INPUT_BTN_1>;
+        };
+    };
+};
 
 /* Custom Device-tree */
 //////////////////////////////////////////////////////////////////////////////
@@ -750,7 +761,37 @@
 
 
 /* Input Listeners */
+&cirque_rh_listener {
+    input-processors = <&zip_xy_scaler 3 1>, <&zip_temp_layer LAYER_Mouse 500>;
+    layer_Mouse_slow {
+        layers = <LAYER_Mouse_slow>;
+        input-processors = <&zip_xy_scaler 1 1>;
+    };
+    layer_Mouse_fast {
+        layers = <LAYER_Mouse_fast>;
+        input-processors = <&zip_xy_scaler 6 1>;
+    };
+    layer_Mouse_warp {
+        layers = <LAYER_Mouse_warp>;
+        input-processors = <&zip_xy_scaler 9 1>;
+    };
+};
 
+&cirque_lh_listener {
+    input-processors = <&zip_xy_scaler 3 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+    layer_Mouse_slow {
+        layers = <LAYER_Mouse_slow>;
+        input-processors = <&zip_xy_scaler 1 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+    };
+    layer_Mouse_fast {
+        layers = <LAYER_Mouse_fast>;
+        input-processors = <&zip_xy_scaler 8 13>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+    };
+    layer_Mouse_warp {
+        layers = <LAYER_Mouse_warp>;
+        input-processors = <&zip_xy_scaler 8 9>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+    };
+};
 
 /* System behavior and macros */
 / {
@@ -10617,7 +10658,6 @@ macros {
   #define SCRL_RIGHT
 #endif
 /*HACK*//{
-
 };
 
 /* Automatically generated macro definitions */
@@ -10866,12 +10906,12 @@ macros {
 
         layer_Mouse {
             bindings = <
-  &none                   &none                   &none                 &none                    &none                   &none                                                                                      &none             &mkp LCLK             &mkp MCLK             &mkp RCLK  &msc MOUSE_SCROLL_RIGHT     &none
-  &none                   &none  &msc MOUSE_SCROLL_LEFT          &mmv MOVE_UP  &msc MOUSE_SCROLL_RIGHT                   &none                                                                     &msc MOUSE_SCROLL_LEFT  &mo LAYER_Mouse_fast  &mo LAYER_Mouse_warp  &mo LAYER_Mouse_slow                &kp K_APP     &none
-  &none    &msc MOUSE_SCROLL_UP          &mmv MOVE_LEFT        &mmv MOVE_DOWN          &mmv MOVE_RIGHT    &msc MOUSE_SCROLL_UP                                                                       &msc MOUSE_SCROLL_UP        &mmv MOVE_LEFT          &mmv MOVE_UP        &mmv MOVE_DOWN          &mmv MOVE_RIGHT  &mkp MB4
-  &none  &msc MOUSE_SCROLL_DOWN    &mo LAYER_Mouse_slow  &mo LAYER_Mouse_warp     &mo LAYER_Mouse_fast  &msc MOUSE_SCROLL_DOWN                                                                     &msc MOUSE_SCROLL_DOWN   &kp RIGHT_INDEX_MOD   &kp RIGHT_MIDDY_MOD   &kp RIGHT_RINGY_MOD      &kp RIGHT_PINKY_MOD  &mkp MB5
-                                               &kp _CUT             &kp _COPY               &kp _PASTE                                                                                                                                    &none                 &none                 &none
-                                                                                                                                &mkp LCLK  &mkp RCLK  &mkp MCLK   &none  &tog LAYER_Mouse   &none
+  &none                   &none                   &none                 &none                    &none                   &none                                                                                                          &none             &mkp LCLK             &mkp MCLK             &mkp RCLK  &msc MOUSE_SCROLL_RIGHT     &none
+  &none                   &none  &msc MOUSE_SCROLL_LEFT          &mmv MOVE_UP  &msc MOUSE_SCROLL_RIGHT                   &none                                                                                         &msc MOUSE_SCROLL_LEFT  &mo LAYER_Mouse_fast  &mo LAYER_Mouse_warp  &mo LAYER_Mouse_slow                &kp K_APP     &none
+  &none    &msc MOUSE_SCROLL_UP          &mmv MOVE_LEFT        &mmv MOVE_DOWN          &mmv MOVE_RIGHT    &msc MOUSE_SCROLL_UP                                                                                           &msc MOUSE_SCROLL_UP        &mmv MOVE_LEFT          &mmv MOVE_UP        &mmv MOVE_DOWN          &mmv MOVE_RIGHT  &mkp MB4
+  &none  &msc MOUSE_SCROLL_DOWN    &mo LAYER_Mouse_slow  &mo LAYER_Mouse_warp     &mo LAYER_Mouse_fast  &msc MOUSE_SCROLL_DOWN                                                                                         &msc MOUSE_SCROLL_DOWN   &kp RIGHT_INDEX_MOD   &kp RIGHT_MIDDY_MOD   &kp RIGHT_RINGY_MOD      &kp RIGHT_PINKY_MOD  &mkp MB5
+                                               &kp _CUT             &kp _COPY               &kp _PASTE                                                                                                                                                        &none                 &none                 &none
+                                                                                                                                &mkp LCLK  &mkp RCLK  &mkp MCLK  &tog LAYER_Mouse  &tog LAYER_Mouse  &tog LAYER_Mouse
             >;
         };
 
