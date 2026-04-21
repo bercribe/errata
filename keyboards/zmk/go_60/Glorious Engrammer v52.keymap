@@ -778,18 +778,18 @@
 };
 
 &cirque_lh_listener {
-    input-processors = <&zip_xy_scaler 3 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+    input-processors = <&zip_xy_scaler 1 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
     layer_Mouse_slow {
         layers = <LAYER_Mouse_slow>;
-        input-processors = <&zip_xy_scaler 1 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+        input-processors = <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
     };
     layer_Mouse_fast {
         layers = <LAYER_Mouse_fast>;
-        input-processors = <&zip_xy_scaler 8 13>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+        input-processors = <&zip_xy_scaler 1 5>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
     };
     layer_Mouse_warp {
         layers = <LAYER_Mouse_warp>;
-        input-processors = <&zip_xy_scaler 8 9>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
+        input-processors = <&zip_xy_scaler 3 10>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>;
     };
 };
 
@@ -10906,9 +10906,9 @@ macros {
 
         layer_Mouse {
             bindings = <
-  &none                   &none                   &none                 &none                    &none                   &none                                                                                                          &none             &mkp LCLK             &mkp MCLK             &mkp RCLK  &msc MOUSE_SCROLL_RIGHT     &none
-  &none                   &none  &msc MOUSE_SCROLL_LEFT          &mmv MOVE_UP  &msc MOUSE_SCROLL_RIGHT                   &none                                                                                         &msc MOUSE_SCROLL_LEFT  &mo LAYER_Mouse_fast  &mo LAYER_Mouse_warp  &mo LAYER_Mouse_slow                &kp K_APP     &none
-  &none    &msc MOUSE_SCROLL_UP          &mmv MOVE_LEFT        &mmv MOVE_DOWN          &mmv MOVE_RIGHT    &msc MOUSE_SCROLL_UP                                                                                           &msc MOUSE_SCROLL_UP        &mmv MOVE_LEFT          &mmv MOVE_UP        &mmv MOVE_DOWN          &mmv MOVE_RIGHT  &mkp MB4
+  &none                   &none  &msc MOUSE_SCROLL_LEFT          &mmv MOVE_UP  &msc MOUSE_SCROLL_RIGHT                   &none                                                                                                          &none             &mkp LCLK             &mkp MCLK             &mkp RCLK  &msc MOUSE_SCROLL_RIGHT     &none
+  &none    &msc MOUSE_SCROLL_UP          &mmv MOVE_LEFT        &mmv MOVE_DOWN          &mmv MOVE_RIGHT                   &none                                                                                         &msc MOUSE_SCROLL_LEFT  &mo LAYER_Mouse_fast  &mo LAYER_Mouse_warp  &mo LAYER_Mouse_slow                &kp K_APP     &none
+  &none     &kp RIGHT_PINKY_MOD     &kp RIGHT_RINGY_MOD   &kp RIGHT_MIDDY_MOD      &kp RIGHT_INDEX_MOD    &msc MOUSE_SCROLL_UP                                                                                           &msc MOUSE_SCROLL_UP        &mmv MOVE_LEFT          &mmv MOVE_UP        &mmv MOVE_DOWN          &mmv MOVE_RIGHT  &mkp MB4
   &none  &msc MOUSE_SCROLL_DOWN    &mo LAYER_Mouse_slow  &mo LAYER_Mouse_warp     &mo LAYER_Mouse_fast  &msc MOUSE_SCROLL_DOWN                                                                                         &msc MOUSE_SCROLL_DOWN   &kp RIGHT_INDEX_MOD   &kp RIGHT_MIDDY_MOD   &kp RIGHT_RINGY_MOD      &kp RIGHT_PINKY_MOD  &mkp MB5
                                                &kp _CUT             &kp _COPY               &kp _PASTE                                                                                                                                                        &none                 &none                 &none
                                                                                                                                 &mkp LCLK  &mkp RCLK  &mkp MCLK  &tog LAYER_Mouse  &tog LAYER_Mouse  &tog LAYER_Mouse
