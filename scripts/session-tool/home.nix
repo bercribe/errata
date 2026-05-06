@@ -8,6 +8,7 @@ in {
   options = with lib;
   with types; {
     programs.session-tool = {
+      enable = mkEnableOption "session-tool";
       directories = mkOption {
         type = listOf str;
         default = ["$HOME"];
@@ -21,7 +22,7 @@ in {
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     xdg.configFile."session-tool/session-tool.conf" = {
       text = ''
         directories=${lib.concatStringsSep ":" cfg.directories}
