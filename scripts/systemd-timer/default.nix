@@ -1,6 +1,9 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  libnotify,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "timer";
-  runtimeInputs = [pkgs.libnotify];
+  runtimeInputs = [libnotify];
   text = builtins.readFile ./timer.sh;
 }

@@ -1,6 +1,9 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  util-linux,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "mirror";
-  runtimeInputs = [pkgs.util-linux];
+  runtimeInputs = [util-linux];
   text = builtins.readFile ./mirror.sh;
 }

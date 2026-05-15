@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import subprocess
 import argparse
@@ -53,14 +51,17 @@ def main(directory, colors):
 
     conflict_map = defaultdict(list)
     for conflict_file in sync_conflict_files:
-        # Extract the base name of the file (without the ".sync-conflict-<date>" part)
+        # Extract the base name of the file
+        # (without the ".sync-conflict-<date>" part)
         base_name = conflict_file.rsplit(".sync-conflict", 1)[0]
         original_file = base_name + os.path.splitext(conflict_file)[1]
         print(f"Comparing: {conflict_file} and {original_file}")
 
         match = False
         for conflict in conflict_map[original_file]:
-            diff = compare_files_with_difftastic(conflict_file, conflict, colors)
+            diff = compare_files_with_difftastic(
+                conflict_file, conflict, colors
+            )
             if not diff:
                 print(f"Identical to {conflict}\n")
                 match = True
@@ -78,9 +79,9 @@ def main(directory, colors):
             if diff_output:
                 print(diff_output)
             else:
-                print(f"No changes.\n")
+                print("No changes.\n")
         else:
-            print(f"Original file not found\n")
+            print("Original file not found\n")
 
     if len(sync_conflict_files) > 0:
         raise RuntimeError("sync conflicts found!")
@@ -90,12 +91,20 @@ def main(directory, colors):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Compare sync conflict files with original files using Difftastic."
+        description=(
+            "Compare sync conflict files with "
+            "original files using Difftastic."
+        )
     )
     parser.add_argument(
-        "directory", metavar="DIR", type=str, help="Directory to scan recursively"
+        "directory", metavar="DIR", type=str,
+        help="Directory to scan recursively"
     )
-    parser.add_argument("--colors", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument(
+        "--colors",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
 
     args = parser.parse_args()
 

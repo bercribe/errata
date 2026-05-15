@@ -1,5 +1,5 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{writeShellApplication}:
+writeShellApplication {
   name = "vman";
   text = builtins.readFile ./vman.sh;
 }

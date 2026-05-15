@@ -1,6 +1,10 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  git,
+  rsync,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "pi-sync";
-  runtimeInputs = [pkgs.git pkgs.rsync];
+  runtimeInputs = [git rsync];
   text = builtins.readFile ./pi-sync.sh;
 }

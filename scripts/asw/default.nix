@@ -1,6 +1,9 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  pulseaudio,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "asw";
-  runtimeInputs = [pkgs.pulseaudio];
+  runtimeInputs = [pulseaudio];
   text = builtins.readFile ./asw.sh;
 }

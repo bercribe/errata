@@ -1,6 +1,9 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  qpdf,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "encrypt-pdf";
-  runtimeInputs = [pkgs.qpdf];
+  runtimeInputs = [qpdf];
   text = builtins.readFile ./encrypt-pdf.sh;
 }

@@ -1,6 +1,11 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  bat,
+  delta,
+  fzf,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "zvb";
-  runtimeInputs = with pkgs; [fzf delta bat];
+  runtimeInputs = [fzf delta bat];
   text = builtins.readFile ./zvb.sh;
 }

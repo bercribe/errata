@@ -1,6 +1,11 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  fd,
+  fzf,
+  tmux,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "st";
-  runtimeInputs = [pkgs.tmux pkgs.fd pkgs.fzf];
+  runtimeInputs = [tmux fd fzf];
   text = builtins.readFile ./st.sh;
 }

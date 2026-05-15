@@ -1,6 +1,9 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  tmux,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "tsl";
-  runtimeInputs = [pkgs.tmux];
+  runtimeInputs = [tmux];
   text = builtins.readFile ./tsl.sh;
 }

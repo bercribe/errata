@@ -1,6 +1,10 @@
-{pkgs, ...}:
-pkgs.writeShellApplication {
+{
+  getopt,
+  git,
+  writeShellApplication,
+}:
+writeShellApplication {
   name = "gtgh";
-  runtimeInputs = [pkgs.git pkgs.getopt];
+  runtimeInputs = [git getopt];
   text = builtins.readFile ./gtgh.sh;
 }
