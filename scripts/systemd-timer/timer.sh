@@ -3,4 +3,4 @@ if systemctl --user status "user-timer-$1.timer" &>/dev/null; then
     [[ "$confirm" =~ ^[Yy]$ ]] || exit 1
     systemctl --user stop "user-timer-$1.timer"
 fi
-systemd-run --user --unit="user-timer-$1" --description="$1 user timer" --on-active="$1" --timer-property=AccuracySec=1s notify-send 'timer complete' "$1"
+systemd-run --user --unit="user-timer-$1" --description="$1 user timer" --on-active="$1" --timer-property=AccuracySec=1s --setenv="PATH=$PATH" bash -c "notify-send 'timer complete' '$1'; sfx ringaling"

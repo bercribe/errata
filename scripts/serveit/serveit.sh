@@ -1,0 +1,16 @@
+# serveit - start a static file server
+port='8000'
+if [ $# -eq 1 ]; then
+  port="$1"
+fi
+
+if hash python3 2>/dev/null; then
+  exec python3 -m http.server "$port"
+elif hash php 2>/dev/null; then
+  exec php -S "localhost:$port"
+elif hash ruby 2>/dev/null; then
+  exec ruby -run -e httpd . -p "$port"
+else
+  echo 'unable to start HTTP server' 1>&2
+  exit 1
+fi

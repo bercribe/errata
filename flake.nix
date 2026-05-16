@@ -14,18 +14,27 @@
           value = pkgs.callPackage ./scripts/${name} {};
         })
         scriptNames);
+
+    overlay = final: prev:
+      scriptPackages final;
+    pkgsF = system:
+      import nixpkgs {
+        inherit system;
+        overlays = [overlay];
+      };
   in {
     packages = forAllSystems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = pkgsF system;
     in
       scriptPackages pkgs);
 
-    overlays.default = final: prev:
-      scriptPackages final;
+    overlays.default = overlay;
 
     homeModules = {
       mirror = import ./scripts/mirror/home.nix;
       session-tool = import ./scripts/session-tool/home.nix;
+      sfx = import ./scripts/sfx/home.nix;
+      snippets = import ./scripts/snippets/home.nix;
     };
   };
 }
