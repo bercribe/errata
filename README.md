@@ -1,10 +1,8 @@
 # eratta
 
-## scripts
+## shaders
 
-#### check-sync-conflicts
-
-Usage: `./csc.py <dir>`
-
-Then, can do `find <dir> | grep sync-conflict | xargs rm`
-
+Shader gallery available by running
+```
+nix run .#shaderGallery
+```
