@@ -53,6 +53,20 @@ html=$(curl -sS -f \
 # Convert HTML to plain text, with audible heading markers
 text=$(echo "$html" \
   | pandoc -f html -t commonmark --wrap=none \
+  | awk '
+    /^    / {
+      if (!in_block) {
+        in_block = 1
+        print "(Code block skipped.)"
+      }
+      next
+    }
+    /^$/ && in_block { next }
+    {
+      in_block = 0
+      print
+    }
+  ' \
   | sed 's/^# \(.*\)/\1./' \
   | sed 's/^## \(.*\)/\1./' \
   | sed 's/^### \(.*\)/\1./' \
