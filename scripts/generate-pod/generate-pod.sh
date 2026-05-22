@@ -84,6 +84,6 @@ echo "Article length: $(echo "$text" | wc -w) words" >&2
 output="${2:-$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/--*/-/g; s/^-//; s/-$//')}.wav"
 
 echo "Generating audio with pocket-tts..." >&2
-pocket-tts generate --text "$text" --voice alba --language english --output-path "$output"
+pocket-tts generate --text "$text" --voice alba --output-path "$output"
 
 echo "Saved: ${output}" >&2
