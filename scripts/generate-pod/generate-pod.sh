@@ -78,6 +78,7 @@ text=$(echo "$html" \
   | sed 's/^## \(.*\)/\1./' \
   | sed 's/^### \(.*\)/\1./' \
   | sed 's/^#### \(.*\)/\1./' \
+  | sed -E 's/([0-9])\.([0-9])/\1 point \2/g' \
   | pandoc -f commonmark -t plain --wrap=none \
   | straightquote)
 if [[ $verbose -eq 1 ]]; then
