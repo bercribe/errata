@@ -17,6 +17,11 @@ if [[ $# -lt 1 ]]; then
   usage
 fi
 
+verbose=0
+if [[ "${1:-}" == "-v" ]]; then
+  verbose=1
+  shift
+fi
 url="$1"
 
 if [[ ! -f "$TOKEN_FILE" ]]; then
@@ -43,6 +48,8 @@ title=$(curl -sS \
   "${base_url}/api/bookmarks/${uid}" \
   | jq -r '.title // "Unknown Article"')
 echo "Title: ${title}" >&2
+
+filename="${2:-$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/--*/-/g; s/^-//; s/-$//')}"
 
 # Fetch article HTML
 html=$(curl -sS -f \
@@ -71,7 +78,11 @@ text=$(echo "$html" \
   | sed 's/^## \(.*\)/\1./' \
   | sed 's/^### \(.*\)/\1./' \
   | sed 's/^#### \(.*\)/\1./' \
-  | pandoc -f commonmark -t plain --wrap=none)
+  | pandoc -f commonmark -t plain --wrap=none \
+  | straightquote)
+if [[ $verbose -eq 1 ]]; then
+  echo "$text" > "$filename.txt"
+fi
 
 if [[ -z "$text" ]]; then
   echo "Error: article text is empty" >&2
@@ -80,8 +91,7 @@ fi
 
 echo "Article length: $(echo "$text" | wc -w) words" >&2
 
-# Determine output filename
-output="${2:-$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/--*/-/g; s/^-//; s/-$//')}.wav"
+output="$filename.wav"
 
 echo "Generating audio with pocket-tts..." >&2
 pocket-tts generate --text "$text" --voice alba --output-path "$output"
