@@ -1,8 +1,14 @@
 {
-  writers,
   difftastic,
+  lib,
+  writers,
 }:
 writers.writePython3Bin "csc" {
-  libraries = [difftastic];
+  makeWrapperArgs = [
+    "--prefix"
+    "PATH"
+    ":"
+    "${lib.makeBinPath [difftastic]}"
+  ];
 }
 (builtins.readFile ./csc.py)
