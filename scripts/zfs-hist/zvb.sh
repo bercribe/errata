@@ -8,7 +8,7 @@ FILE="${1:-}"
 LIMIT=10
 
 usage() {
-  echo "Usage: vb.sh <file> [-n <count>]"
+  echo "Usage: zvb.sh <file> [-n <count>]"
   exit 0
 }
 
