@@ -23,11 +23,21 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$FILE" ]]; then usage; fi
-if [[ ! -f "$FILE" ]]; then echo "Error: '$FILE' not found." >&2; exit 1; fi
 if ! command -v fzf &>/dev/null; then echo "Error: fzf is required." >&2; exit 1; fi
 
-ABS_FILE="$(realpath "$FILE")"
-DATASET_MOUNT=$(df --output=target "$ABS_FILE" | tail -1)
+ABS_FILE="$(realpath --canonicalize-missing "$FILE")"
+
+# Walk up to find the nearest existing ancestor directory
+ANCESTOR="$(dirname "$ABS_FILE")"
+while [[ ! -d "$ANCESTOR" ]]; do
+  ANCESTOR="$(dirname "$ANCESTOR")"
+done
+if [[ "$ANCESTOR" == "/" ]]; then
+  echo "Error: no existing ancestor directory found for '$FILE'" >&2
+  exit 1
+fi
+
+DATASET_MOUNT=$(df --output=target "$ANCESTOR" | tail -1)
 RELATIVE_PATH="${ABS_FILE#"$DATASET_MOUNT/"}"
 SNAP_DIR="$DATASET_MOUNT/.zfs/snapshot"
 
@@ -39,7 +49,11 @@ fi
 get_snaps() {
   local limit="${1:-$LIMIT}"
   local last_hash
-  last_hash=$(md5sum "$ABS_FILE" | cut -d' ' -f1)
+  if [[ -f "$ABS_FILE" ]]; then
+    last_hash=$(md5sum "$ABS_FILE" | cut -d' ' -f1)
+  else
+    last_hash="NONEXISTENT"
+  fi
   for snap in "$SNAP_DIR"/*/; do
     [[ -f "$snap/$RELATIVE_PATH" ]] && basename "$snap"
   done | sort -r | while IFS= read -r snap_name; do
@@ -61,16 +75,21 @@ preview_snap() {
 preview_diff() {
   local snap_name="$1"
   local snap_file="$SNAP_DIR/$snap_name/$RELATIVE_PATH"
-  delta --paging=always "$snap_file" "$ABS_FILE" || true
+  if [[ -f "$ABS_FILE" ]]; then
+    delta --paging=always "$snap_file" "$ABS_FILE" || true
+  else
+    delta --paging=always "$snap_file" /dev/null || true
+  fi
 }
 restore_file() {
   local snap_name="$1"
   local snap_file="$SNAP_DIR/$snap_name/$RELATIVE_PATH"
+  mkdir -p "$(dirname "$ABS_FILE")"
   cp "$snap_file" "$ABS_FILE" || true
 }
 
 export -f preview_snap preview_diff restore_file
-export ABS_FILE SNAP_DIR RELATIVE_PATH LIMIT
+export ABS_FILE SNAP_DIR RELATIVE_PATH LIMIT FILE_EXISTS
 
 mapfile -t entries < <(get_snaps)
 
