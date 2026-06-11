@@ -31,5 +31,14 @@ if [[ -z "$(lpstat -d 2>/dev/null | sed -n 's/^system default destination: //p')
   echo "Default printer set to: $printer"
 fi
 
+# Render markdown to PDF if needed
+print_file="$file"
+if [[ "$file" == *.md ]]; then
+  print_file=$(mktemp --suffix=.pdf)
+  trap 'rm -f "$print_file"' EXIT
+  echo "Rendering markdown to PDF..."
+  pandoc "$file" -o "$print_file"
+fi
+
 echo "Printing '$file'..."
-lp -n 1 -o sides=two-sided-long-edge -- "$file"
+lp -n 1 -o sides=two-sided-long-edge -- "$print_file"
