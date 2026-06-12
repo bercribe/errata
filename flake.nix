@@ -31,6 +31,7 @@
     overlays.default = overlay;
 
     homeModules = {
+      file-actions = import ./scripts/file-actions/home.nix;
       mirror = import ./scripts/mirror/home.nix;
       session-tool = import ./scripts/session-tool/home.nix;
       sfx = import ./scripts/sfx/home.nix;
