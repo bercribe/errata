@@ -33,6 +33,7 @@
     homeModules = {
       file-actions = import ./scripts/file-actions/home.nix;
       mirror = import ./scripts/mirror/home.nix;
+      oo = import ./scripts/oo/home.nix;
       session-tool = import ./scripts/session-tool/home.nix;
       sfx = import ./scripts/sfx/home.nix;
       snippets = import ./scripts/snippets/home.nix;
