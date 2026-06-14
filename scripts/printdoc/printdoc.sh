@@ -4,6 +4,7 @@ if [[ $# -ne 1 ]]; then
 fi
 
 file="$1"
+PRINTDOC_LUA_FILTER="${PRINTDOC_LUA_FILTER:-$(dirname "$0")/strip-codeblocks.lua}"
 
 if [[ ! -f "$file" ]]; then
   echo "Error: file not found: $file" >&2
@@ -37,7 +38,7 @@ if [[ "$file" == *.md ]]; then
   print_file=$(mktemp --suffix=.pdf)
   trap 'rm -f "$print_file"' EXIT
   echo "Rendering markdown to PDF..."
-  pandoc "$file" -o "$print_file"
+  pandoc "$file" --lua-filter="$PRINTDOC_LUA_FILTER" -o "$print_file"
 fi
 
 echo "Printing '$file'..."
