@@ -38,25 +38,5 @@
       sfx = import ./scripts/sfx/home.nix;
       snippets = import ./scripts/snippets/home.nix;
     };
-
-    apps = forAllSystems (
-      system: let
-        pkgs = pkgsF system;
-      in {
-        shaderGallery = let
-          python = pkgs.python3.withPackages (python-pkgs:
-            with python-pkgs; [
-            ]);
-          pythonCmd = pkgs.lib.getExe python;
-          program = pkgs.writeShellScriptBin "shader-server" ''
-            cd ./graphics/
-            ${pythonCmd} server.py
-          '';
-        in {
-          type = "app";
-          program = pkgs.lib.getExe program;
-        };
-      }
-    );
   };
 }
