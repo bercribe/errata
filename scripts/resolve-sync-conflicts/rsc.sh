@@ -54,7 +54,7 @@ preview_diff() {
   local original
   original=$(get_original "$conflict")
   if [[ -f "$original" ]]; then
-    delta --paging=always "$original" "$conflict" 2>&1 || true
+    delta --paging=always "$original" "$conflict" 2>&1 && echo "No difference"
   else
     echo "Original file not found: $original"
     echo ""
