@@ -49,36 +49,49 @@ echo "Selected ${#images[@]} images, ${interval}s per image"
 echo "Press enter to start..."
 read -r
 
-imv_pid=""
+viewer_pid=""
 cleanup() {
-  [ -n "$imv_pid" ] && kill "$imv_pid" 2>/dev/null || true
+  [ -n "$viewer_pid" ] && kill "$viewer_pid" 2>/dev/null || true
 }
 trap cleanup EXIT
+
+is_mac=$([ "$(uname)" = "Darwin" ] && echo 1 || echo 0)
+
+show_image() {
+  if [ "$is_mac" -eq 1 ]; then
+    [ -n "$viewer_pid" ] && kill "$viewer_pid" 2>/dev/null || true
+    qlmanage -p "$1" &>/dev/null &
+    viewer_pid=$!
+  elif [ -z "$viewer_pid" ]; then
+    imv -f "$1" &
+    viewer_pid=$!
+    sleep 0.5
+  else
+    imv-msg "$viewer_pid" open "$1"
+    imv-msg "$viewer_pid" close 1
+  fi
+}
+
+warn_timer() {
+  warn=5
+  if [ "$is_mac" -eq 1 ]; then
+    sleep "$interval"
+  elif [ "$interval" -gt "$warn" ]; then
+    sleep $((interval - warn))
+    imv-msg "$viewer_pid" background 331111
+    sleep "$warn"
+    imv-msg "$viewer_pid" background 000000
+  else
+    sleep "$interval"
+  fi
+}
 
 for i in "${!images[@]}"; do
   img="${images[$i]}"
   num=$((i + 1))
   echo "[${num}/${#images[@]}] $(basename "$img") - ${interval}s"
-
-  if [ "$i" -eq 0 ]; then
-    imv -f "$img" &
-    imv_pid=$!
-    sleep 0.5
-  else
-    imv-msg "$imv_pid" open "$img"
-    imv-msg "$imv_pid" close 1
-  fi
-
-  # warn by changing background color in the last 5 seconds
-  warn=5
-  if [ "$interval" -gt "$warn" ]; then
-    sleep $((interval - warn))
-    imv-msg "$imv_pid" background 331111
-    sleep "$warn"
-    imv-msg "$imv_pid" background 000000
-  else
-    sleep "$interval"
-  fi
+  show_image "$img"
+  warn_timer
 done
 
 echo "Done!"
