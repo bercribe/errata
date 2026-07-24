@@ -73,16 +73,21 @@ show_image() {
 }
 
 warn_timer() {
+    half=$((interval/2))
     warn=5
     if [ "$is_mac" -eq 1 ]; then
         sleep "$interval"
-    elif [ "$interval" -gt "$warn" ]; then
-        sleep $((interval - warn))
-        imv-msg "$viewer_pid" background 331111
-        sleep "$warn"
-        imv-msg "$viewer_pid" background 000000
     else
-        sleep "$interval"
+        imv-msg "$viewer_pid" background 000000
+        sleep "$half"
+        imv-msg "$viewer_pid" background 444411
+        if [ "$half" -gt "$warn" ]; then
+            sleep $((half - warn))
+            imv-msg "$viewer_pid" background 331111
+            sleep "$warn"
+        else
+            sleep "$half"
+        fi
     fi
 }
 
