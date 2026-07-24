@@ -23,18 +23,11 @@ source="${1:-}"
 [ -z "$source" ] && usage
 
 fetch_karakeep_images() {
-    local list_id="$1"
-    local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/karakeep"
-    local config_file="$config_dir/karakeep.toml"
+    local kk_url="$1"
+    local list_id="$2"
 
-    if [ ! -f "$config_file" ]; then
-        echo "karakeep config not found: $config_file" >&2
-        exit 1
-    fi
-
-    local kk_url kk_api_key_path kk_api_key
-    kk_url=$(grep '^url' "$config_file" | sed 's/^url *= *"//; s/"$//')
-    kk_api_key_path=$(grep '^api_key_path' "$config_file" | sed 's/^api_key_path *= *"//; s/"$//')
+    local kk_api_key_path kk_api_key
+    kk_api_key_path="${XDG_CONFIG_HOME:-$HOME/.config}/karakeep/api_key"
     kk_api_key=$(tr -d '\n' < "$kk_api_key_path")
 
     local auth="Authorization: Bearer $kk_api_key"
@@ -98,8 +91,10 @@ fetch_karakeep_images() {
 if [ -d "$source" ]; then
     img_dir="$source"
 elif [[ "$source" == *karakeep* ]]; then
-    list_id=$(echo "$source" | sed 's|/$||; s|.*/||')
-    img_dir=$(fetch_karakeep_images "$list_id")
+    stripped="${source#*://}"
+    kk_url="${source%%://*}://${stripped%%/*}"
+    list_id="${source##*/}"
+    img_dir=$(fetch_karakeep_images "$kk_url" "$list_id")
 else
     url_path=$(echo "$source" | sed 's|^https\?://||; s|/$||')
     img_dir="$HOME/Pictures/timed-ref/$url_path"
