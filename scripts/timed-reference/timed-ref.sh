@@ -22,8 +22,84 @@ shift $((OPTIND - 1))
 source="${1:-}"
 [ -z "$source" ] && usage
 
+fetch_karakeep_images() {
+    local list_id="$1"
+    local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/karakeep"
+    local config_file="$config_dir/karakeep.toml"
+
+    if [ ! -f "$config_file" ]; then
+        echo "karakeep config not found: $config_file" >&2
+        exit 1
+    fi
+
+    local kk_url kk_api_key_path kk_api_key
+    kk_url=$(grep '^url' "$config_file" | sed 's/^url *= *"//; s/"$//')
+    kk_api_key_path=$(grep '^api_key_path' "$config_file" | sed 's/^api_key_path *= *"//; s/"$//')
+    kk_api_key=$(tr -d '\n' < "$kk_api_key_path")
+
+    local auth="Authorization: Bearer $kk_api_key"
+
+    # fetch all bookmarks from the list, paginating
+    local all_bookmarks cursor query response page_bookmarks next_cursor
+    all_bookmarks="[]"
+    cursor=""
+
+    while true; do
+        query=""
+        [ -n "$cursor" ] && query="?cursor=$cursor"
+        response=$(curl -sf -H "$auth" -H "Accept: application/json" "$kk_url/api/v1/lists/$list_id/bookmarks$query")
+        page_bookmarks=$(echo "$response" | jq '.bookmarks')
+        all_bookmarks=$(echo "$all_bookmarks $page_bookmarks" | jq -s 'add')
+        next_cursor=$(echo "$response" | jq -r '.nextCursor // empty')
+        [ -z "$next_cursor" ] && break
+        cursor="$next_cursor"
+    done
+
+    # extract image asset IDs
+    local asset_ids
+    asset_ids=$(echo "$all_bookmarks" | jq -r '.[] | select(.content.type == "asset" and .content.assetType == "image") | .content.assetId')
+
+    if [ -z "$asset_ids" ]; then
+        echo "No image bookmarks found in list: $list_id" >&2
+        exit 1
+    fi
+
+    local img_dir="$HOME/Pictures/timed-ref/karakeep/$list_id"
+    mkdir -p "$img_dir"
+
+    echo "Downloading images from karakeep list: $list_id" >&2
+    local asset_id
+    for asset_id in $asset_ids; do
+        if ls "$img_dir/$asset_id".* > /dev/null 2>&1; then
+            continue
+        fi
+        local headers_file
+        headers_file=$(mktemp)
+        local tmp_file="$img_dir/$asset_id.tmp"
+        if curl -sf -H "$auth" -o "$tmp_file" -D "$headers_file" "$kk_url/api/v1/assets/$asset_id"; then
+            local content_type ext
+            content_type=$(grep -i '^content-type:' "$headers_file" | tr -d '\r' | awk '{print $2}')
+            case "$content_type" in
+                image/png) ext="png" ;;
+                image/webp) ext="webp" ;;
+                image/gif) ext="gif" ;;
+                *) ext="jpg" ;;
+            esac
+            mv "$tmp_file" "$img_dir/$asset_id.$ext"
+        else
+            rm -f "$tmp_file"
+        fi
+        rm -f "$headers_file"
+    done
+
+    echo "$img_dir"
+}
+
 if [ -d "$source" ]; then
     img_dir="$source"
+elif [[ "$source" == *karakeep* ]]; then
+    list_id=$(echo "$source" | sed 's|/$||; s|.*/||')
+    img_dir=$(fetch_karakeep_images "$list_id")
 else
     url_path=$(echo "$source" | sed 's|^https\?://||; s|/$||')
     img_dir="$HOME/Pictures/timed-ref/$url_path"
