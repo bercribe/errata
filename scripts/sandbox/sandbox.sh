@@ -5,6 +5,7 @@ usage() {
   echo '  sandbox stop      # stop the sandbox'
   echo '  sandbox restart   # restart the sandbox'
   echo '  sandbox status    # check sandbox status'
+  echo '  sandbox logs      # tail sandbox logs'
   exit 1
 }
 
@@ -30,6 +31,9 @@ case "$1" in
     ;;
   status)
     systemctl status microvm@sources.service
+    ;;
+  logs)
+    journalctl -f -u microvm@sources.service
     ;;
   *)
     usage
