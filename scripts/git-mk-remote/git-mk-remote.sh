@@ -9,13 +9,13 @@ host="${1:?Usage: git-push-ssh <host> <remote-path> [branch]}"
 remote_path="${2:?Usage: git-push-ssh <host> <remote-path> [branch]}"
 branch="${3:-$(git rev-parse --abbrev-ref HEAD)}"
 
-remote_name="${host}-git"
-remote_home=$(ssh "$remote_name" 'echo $HOME')
-remote_url="ssh://${remote_name}/${remote_home}/${remote_path}"
+ssh_target="${host}-git"
+remote_home=$(ssh "$ssh_target" 'echo $HOME')
+remote_url="ssh://${ssh_target}/${remote_home}/${remote_path}"
 
-if ! git remote get-url "$remote_name" &>/dev/null; then
-  git remote add "$remote_name" "$remote_url"
-  echo "Added remote: $remote_name -> $remote_url"
+if ! git remote get-url "$host" &>/dev/null; then
+  git remote add "$host" "$remote_url"
+  echo "Added remote: $host -> $remote_url"
 fi
 
-git push "$remote_name" "$branch"
+git push "$host" "$branch"
