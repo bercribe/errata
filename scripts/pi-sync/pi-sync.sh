@@ -7,6 +7,7 @@
 #   pi-sync push               - commit and push local changes
 #   pi-sync pull               - pull remote changes
 #   pi-sync status             - show sync status
+#   pi-sync diff               - show uncommitted changes
 
 set -euo pipefail
 
@@ -27,6 +28,7 @@ usage() {
     echo "  pi-sync push               - commit and push local changes"
     echo "  pi-sync pull               - pull remote changes"
     echo "  pi-sync status             - show sync status"
+    echo "  pi-sync diff               - show uncommitted changes"
     exit 1
 }
 
@@ -118,6 +120,17 @@ cmd_sync() {
     echo "Synced."
 }
 
+cmd_diff() {
+    if [[ ! -d "$REPO_DIR/.git" ]]; then
+        echo "Not initialized. Run: pi-sync init <url>"
+        exit 1
+    fi
+    cd "$REPO_DIR"
+    git add -A
+    git diff --cached
+    git reset HEAD >/dev/null 2>&1
+}
+
 cmd_status() {
     if [[ ! -d "$REPO_DIR/.git" ]]; then
         echo "Not initialized. Run: pi-sync init <url>"
@@ -150,6 +163,7 @@ case "$cmd" in
     push)   cmd_push ;;
     pull)   cmd_pull ;;
     sync)   cmd_sync ;;
+    diff)   cmd_diff ;;
     status) cmd_status ;;
     -h|--help) usage ;;
     *)      echo "Error: unknown command '$cmd'"; usage ;;
