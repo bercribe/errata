@@ -1,1 +1,2 @@
-curl -4 ifconfig.me
+curl -4 -s "$@" ifconfig.me
+echo
