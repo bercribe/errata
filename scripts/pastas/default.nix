@@ -1,9 +1,9 @@
 {
-  pasta,
+  errata,
   writeShellApplication,
 }:
 writeShellApplication {
   name = "pastas";
-  runtimeInputs = [pasta];
+  runtimeInputs = [errata.pasta];
   text = builtins.readFile ./pastas.sh;
 }

@@ -1,13 +1,13 @@
 {
   curl,
+  errata,
   jq,
   pandoc,
   pocket-tts,
-  straightquote,
   writeShellApplication,
 }:
 writeShellApplication {
   name = "generate-pod";
-  runtimeInputs = [curl jq pandoc pocket-tts straightquote];
+  runtimeInputs = [curl jq pandoc pocket-tts errata.straightquote];
   text = builtins.readFile ./generate-pod.sh;
 }

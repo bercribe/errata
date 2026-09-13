@@ -1,10 +1,10 @@
 {
+  errata,
   libnotify,
-  sfx,
   writeShellApplication,
 }:
 writeShellApplication {
   name = "timer";
-  runtimeInputs = [libnotify sfx];
+  runtimeInputs = [libnotify errata.sfx];
   text = builtins.readFile ./timer.sh;
 }

@@ -1,9 +1,9 @@
 {
-  sfx,
+  errata,
   writeShellApplication,
 }:
 writeShellApplication {
   name = "boop";
-  runtimeInputs = [sfx];
+  runtimeInputs = [errata.sfx];
   text = builtins.readFile ./boop.sh;
 }

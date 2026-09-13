@@ -15,8 +15,7 @@
         })
         scriptNames);
 
-    overlay = final: prev:
-      scriptPackages final;
+    overlay = final: prev: {errata = scriptPackages final;};
     pkgsF = system:
       import nixpkgs {
         inherit system;
