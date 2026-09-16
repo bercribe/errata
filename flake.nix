@@ -36,6 +36,7 @@
       session-tool = import ./scripts/session-tool/home.nix;
       sfx = import ./scripts/sfx/home.nix;
       snippets = import ./scripts/snippets/home.nix;
+      vma = import ./scripts/vma/home.nix;
     };
   };
 }

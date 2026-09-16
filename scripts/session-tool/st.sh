@@ -5,6 +5,8 @@
 # Config: ~/.config/session-tool/session-tool.conf
 #   directories=/path/one:/path/two
 #   fd_flags=--flag1 --flag2
+#
+# If STARTUP_CMD is set, it is run in newly created sessions (not existing ones)
 
 CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/session-tool/session-tool.conf"
 
@@ -49,6 +51,9 @@ session_name=$(basename "$path" | tr . _)
 
 if ! tmux has-session -t "$session_name"; then
     tmux new-session -ds "$session_name" -c "$path"
+    if [[ -n ${STARTUP_CMD:-} ]]; then
+        tmux send-keys -t "$session_name" "$STARTUP_CMD" Enter
+    fi
 fi
 
 if [[ -z ${TMUX:-} ]]; then
