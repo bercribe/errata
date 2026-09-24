@@ -69,17 +69,17 @@ url=$(git remote get-url origin)
 if [[ ! $url =~ http ]]; then # assume ssh form
     url=$(echo "$url" | sed -E 's|.*git@(.*):|https://\1/|')
 fi
-url=''${url%.git} # chop off suffix
+url=${url%.git} # chop off suffix
 
 if [[ -f $abspath ]]; then
     gitRoot=$(git rev-parse --show-toplevel)
-    relpath=''${abspath#"$gitRoot"}
+    relpath=${abspath#"$gitRoot"}
 
     if [ -n "$upstream" ]; then
         upstream="$upstream/"
     fi
     branch=$(git rev-parse --abbrev-ref "${upstream}HEAD")
-    branch=''${branch#"$upstream"}
+    branch=${branch#"$upstream"}
 
     url="$url/blob/$branch$relpath"
     if [ -n "$line" ]; then
