@@ -21,6 +21,7 @@ fi
 if [[ -n ${branch:-} ]]; then
     echo "Pulling ${branch}..."
     git checkout -B "$branch" "$host/$branch"
+    git branch -u heavens-door/pr-review pr-review
 else
     branch="$(git rev-parse --abbrev-ref HEAD)"
     echo "Pushing ${branch}..."
