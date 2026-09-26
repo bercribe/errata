@@ -15,7 +15,17 @@
         })
         scriptNames);
 
-    overlay = final: prev: {errata = scriptPackages final;};
+    vimPluginNames = builtins.attrNames (builtins.readDir ./vim-plugins);
+    vimPluginPackages = pkgs:
+      builtins.listToAttrs (map (name: {
+          inherit name;
+          value = pkgs.callPackage ./vim-plugins/${name} {};
+        })
+        vimPluginNames);
+
+    overlay = final: prev: {
+      errata = scriptPackages final // {vimPlugins = vimPluginPackages final;};
+    };
     pkgsF = system:
       import nixpkgs {
         inherit system;

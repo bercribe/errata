@@ -1,9 +1,9 @@
-# pr-review.sh - review a github PR locally in a git worktree + nvim/octo
+# pr-review.sh - review a github PR locally in a git worktree + nvim
 #
 # usage:
 #   pr-review <pr-number|pr-url>   open (or resume) a review
-#   pr-review --clean <number>     remove the worktree for one PR
-#   pr-review --clean-all          remove all worktrees for the current repo
+#   pr-review --clean <number>     remove everything for one PR
+#   pr-review --clean-all          remove everything for the current repo
 
 set -euo pipefail
 
@@ -16,15 +16,20 @@ usage() {
     exit 1
 }
 
-# turns a git remote url (ssh or https) into an "owner-repo" slug
-repo_slug() {
+# parses a git remote url (ssh or https) into "owner repo"
+owner_repo() {
     local url
     url=$(git remote get-url origin)
     if [[ ! $url =~ http ]]; then # assume ssh form
         url=$(echo "$url" | sed -E 's|.*git@(.*):|https://\1/|')
     fi
     url=${url%.git}
-    echo "$url" | sed -E 's#.*/([^/]+/[^/]+)$#\1#' | tr '/' '-'
+    echo "$url" | sed -E 's#.*/([^/]+)/([^/]+)$#\1 \2#'
+}
+
+repo_slug() {
+    read -r owner repo <<<"$(owner_repo)"
+    echo "${owner}-${repo}"
 }
 
 pr_number_from_arg() {
@@ -39,19 +44,22 @@ pr_number_from_arg() {
     fi
 }
 
-worktree_dir_for() {
+session_dir_for() {
     echo "$cache_root/$(repo_slug)/$1"
 }
 
-remove_worktree() {
-    local dir=$1
-    [[ -d $dir ]] || return 0
-    git worktree remove --force "$dir" 2>/dev/null || rm -rf "$dir"
-    git worktree prune
+remove_session() {
+    local session_dir=$1
+    [[ -d $session_dir ]] || return 0
+    if [[ -d "$session_dir/worktree" ]]; then
+        git worktree remove --force "$session_dir/worktree" 2>/dev/null || true
+        git worktree prune
+    fi
+    rm -rf "$session_dir"
 }
 
 clean_one() {
-    remove_worktree "$(worktree_dir_for "$1")"
+    remove_session "$(session_dir_for "$1")"
 }
 
 clean_all() {
@@ -60,7 +68,7 @@ clean_all() {
     [[ -d $repo_dir ]] || return 0
     for dir in "$repo_dir"/*/; do
         [[ -d $dir ]] || continue
-        remove_worktree "${dir%/}"
+        remove_session "${dir%/}"
     done
     rmdir --ignore-fail-on-non-empty "$repo_dir" 2>/dev/null || true
 }
@@ -83,17 +91,23 @@ case "$1" in
 esac
 
 number=$(pr_number_from_arg "$1")
-dir=$(worktree_dir_for "$number")
+read -r owner repo <<<"$(owner_repo)"
+session_dir=$(session_dir_for "$number")
+worktree_dir="$session_dir/worktree"
 
-if [[ ! -d $dir ]]; then
-    mkdir -p "$(dirname "$dir")"
-    git worktree add "$dir" HEAD
+if [[ ! -d $worktree_dir ]]; then
+    mkdir -p "$session_dir"
+    git worktree add "$worktree_dir" HEAD
 fi
 
-# `gh pr checkout` sets up the branch/tracking metadata that both `gh pr
-# view` and Octo's current-branch PR detection rely on, so run it inside the
-# worktree rather than manually fetching+checking out the PR ref ourselves.
-(cd "$dir" && gh pr checkout "$number")
+# `gh pr checkout` sets up the branch/tracking metadata gh itself needs for
+# forked PRs, so run it inside the worktree rather than fetching manually.
+(cd "$worktree_dir" && gh pr checkout "$number")
 
-cd "$dir"
-exec nvim +"Octo pr edit $number" +"Octo review"
+export PR_REVIEW_DIR="$session_dir"
+export PR_REVIEW_NUMBER="$number"
+export PR_REVIEW_OWNER="$owner"
+export PR_REVIEW_REPO="$repo"
+
+cd "$worktree_dir"
+exec nvim
