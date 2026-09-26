@@ -20,8 +20,7 @@ fi
 
 if [[ -n ${branch:-} ]]; then
     echo "Pulling ${branch}..."
-    git checkout -b "$branch"
-    git pull "$host" "$branch"
+    git checkout -B "$branch" "$host/$branch"
 else
     branch="$(git rev-parse --abbrev-ref HEAD)"
     echo "Pushing ${branch}..."
