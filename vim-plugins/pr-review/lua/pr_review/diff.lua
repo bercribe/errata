@@ -36,7 +36,7 @@ local function tag_buffer(bufnr, side, left_rev, right_rev, path, left_path)
     -- file's name *as it existed at whichever rev it's blaming*) can find
     -- the right path regardless of which pane the comment was made from
     vim.b[bufnr].pr_review_diff =
-        { side = side, left_rev = left_rev, right_rev = right_rev, path = path, left_path = left_path }
+    { side = side, left_rev = left_rev, right_rev = right_rev, path = path, left_path = left_path }
 end
 
 ---@param win integer
@@ -62,10 +62,16 @@ local function open_scratch_side(win, rev, left_rev, right_rev, path, side, left
     return bufnr
 end
 
----Opens a two-pane diff of `path` between `left_rev` and `right_rev` in a
----new tab. `path` is the file's name as of `right_rev` (its canonical name
----for comments/read-tracking); if it was renamed somewhere in the range,
----the left/base side is fetched under its old name instead.
+-- reused across calls so that browsing multiple files stays in the same
+-- pair of windows instead of accumulating tabs/splits
+local diff_wins = { left = nil, right = nil }
+
+---Opens a two-pane diff of `path` between `left_rev` and `right_rev`,
+---reusing the existing diff windows (in the current tab) if there already
+---are any, or splitting the current window otherwise. `path` is the file's
+---name as of `right_rev` (its canonical name for comments/read-tracking);
+---if it was renamed somewhere in the range, the left/base side is fetched
+---under its old name instead.
 ---@param left_rev string
 ---@param right_rev string
 ---@param path string
@@ -75,21 +81,31 @@ function M.open(left_rev, right_rev, path)
         vim.notify(string.format("pr_review: %s was renamed from %s", path, left_path))
     end
 
-    vim.cmd("tabnew")
-    local right_win = vim.api.nvim_get_current_win()
+    local right_win, left_win
+    if diff_wins.right and vim.api.nvim_win_is_valid(diff_wins.right) and diff_wins.left and vim.api.nvim_win_is_valid(diff_wins.left) then
+        right_win, left_win = diff_wins.right, diff_wins.left
+    else
+        right_win = vim.api.nvim_get_current_win()
+        vim.api.nvim_set_current_win(right_win)
+        vim.cmd("leftabove vsplit")
+        left_win = vim.api.nvim_get_current_win()
+        vim.api.nvim_set_current_win(right_win)
+        diff_wins.right, diff_wins.left = right_win, left_win
+    end
+    assert(right_win)
 
     local head = git.head_sha()
     local right_bufnr
     if right_rev == head and vim.uv.fs_stat(path) then
-        vim.cmd.edit(vim.fn.fnameescape(path))
-        right_bufnr = vim.api.nvim_get_current_buf()
+        vim.api.nvim_win_call(right_win, function()
+            vim.cmd.edit(vim.fn.fnameescape(path))
+        end)
+        right_bufnr = vim.api.nvim_win_get_buf(right_win)
         tag_buffer(right_bufnr, "RIGHT", left_rev, right_rev, path, left_path)
     else
         right_bufnr = open_scratch_side(right_win, right_rev, left_rev, right_rev, path, "RIGHT", left_path)
     end
 
-    vim.cmd("leftabove vsplit")
-    local left_win = vim.api.nvim_get_current_win()
     open_scratch_side(left_win, left_rev, left_rev, right_rev, path, "LEFT", left_path, left_path)
 
     vim.api.nvim_win_call(left_win, function()
