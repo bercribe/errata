@@ -76,19 +76,39 @@ function M.blame_commit(rev, path, line)
     return out:match("^(%x+)")
 end
 
----Paths that differ between two revisions.
 ---@param a string
 ---@param b string
----@return string[]|nil, string|nil
-function M.changed_files(a, b)
-    local out, err = run({ "diff", "--name-only", a, b })
+---@return table[]|nil, string|nil
+function M.changed_file_statuses(a, b)
+    local out, err = run({ "diff", "--name-status", a, b })
     if not out then
         return nil, err
     end
     if out == "" then
         return {}
     end
-    return vim.split(out, "\n", { trimempty = true })
+    local files = {}
+    for line in out:gmatch("[^\n]+") do
+        local status, path = line:match("^([^%s]).-([^%s]*)$")
+        if status and path then
+            table.insert(files, { path = path, status = status })
+        end
+    end
+    return files
+end
+
+---Paths that differ between two revisions.
+---@param a string
+---@param b string
+---@return string[]|nil, string|nil
+function M.changed_files(a, b)
+    local out, err = M.changed_file_statuses(a, b)
+    if not out then
+        return nil, err
+    end
+    return vim.tbl_map(function(f)
+        return f.path
+    end, out)
 end
 
 return M

@@ -40,19 +40,13 @@ end
 
 ---@param left string
 ---@param right string
----@param is_full boolean
 ---@param fzf_cb fun(entry: string?)
-local function get_contents(left, right, is_full, fzf_cb)
-    local paths
-    if is_full then
-        paths = vim.tbl_map(function(f)
-            return f.path
-        end, state.remote.files or {})
-    else
-        paths = git.changed_files(left, right) or {}
-    end
-    for _, path in ipairs(paths) do
-        fzf_cb(string.format("[%s] %s", icon_for(path, right), path))
+local function get_contents(left, right, fzf_cb)
+    local file_statuses = git.changed_file_statuses(left, right) or {}
+    for _, fs in ipairs(file_statuses) do
+        local path = fs.path
+        local status = fs.status
+        fzf_cb(string.format("[%s] (%s) %s", icon_for(path, right), status, path))
     end
     fzf_cb()
 end
@@ -60,7 +54,7 @@ end
 ---@param entry string
 ---@return string
 local function path_from_entry(entry)
-    return entry:match("^%[.%]%s(.+)$")
+    return entry:match("^%[.%]%s%(.%)%s(.+)$")
 end
 
 function M.open()
@@ -74,7 +68,7 @@ function M.open()
     local left, right, is_full = range.current()
 
     fzf.fzf_exec(function(fzf_cb)
-        get_contents(left, right, is_full, fzf_cb)
+        get_contents(left, right, fzf_cb)
     end, {
         prompt = is_full and "PR Files> " or string.format("PR Files (%s..%s)> ", left:sub(1, 8), right:sub(1, 8)),
         actions = {
