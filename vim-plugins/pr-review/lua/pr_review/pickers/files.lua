@@ -24,18 +24,18 @@ local M = {}
 ---@param path string
 ---@param right string
 ---@return string icon
-local function icon_for(path, right)
+local function icon_for(path, status, right)
     local own = state.draft.read_files[path]
     if own and (own.at_sha == right or git.is_ancestor(right, own.at_sha)) then
-        return "x"
+        return string.format("%s  ", status)
     end
 
     local through = state.effective_watermark(path)
     if through and (through == right or git.is_ancestor(right, through)) then
-        return "c"
+        return string.format("%s* ", status)
     end
 
-    return own and "!" or " "
+    return string.format("  %s", status)
 end
 
 ---@param left string
@@ -46,7 +46,7 @@ local function get_contents(left, right, fzf_cb)
     for _, fs in ipairs(file_statuses) do
         local path = fs.path
         local status = fs.status
-        fzf_cb(string.format("[%s] (%s) %s", icon_for(path, right), status, path))
+        fzf_cb(string.format("%s %s", icon_for(path, status, right), path))
     end
     fzf_cb()
 end
@@ -54,7 +54,7 @@ end
 ---@param entry string
 ---@return string
 local function path_from_entry(entry)
-    return entry:match("^%[.%]%s%(.%)%s(.+)$")
+    return entry:match("^...%s(.+)$")
 end
 
 function M.open()

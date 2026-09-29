@@ -13,18 +13,18 @@ local M = {}
 local function icon_for(sha)
     local tag = state.draft.read_commits[sha]
     if tag == "explicit" then
-        return "x"
+        return "R  "
     elseif tag == "implicit" then
-        return "f"
+        return "R* "
     end
-    return " "
+    return "  U"
 end
 
 ---@param fzf_cb fun(entry: string?)
 local function get_contents(fzf_cb)
     for _, c in ipairs(state.remote.commits or {}) do
         local subject = (c.message or ""):match("^[^\n]*") or ""
-        fzf_cb(string.format("[%s] %s %s", icon_for(c.sha), c.sha:sub(1, 8), subject))
+        fzf_cb(string.format("%s %s %s", icon_for(c.sha), c.sha:sub(1, 8), subject))
     end
     fzf_cb()
 end
@@ -35,7 +35,7 @@ end
 ---@param entry string
 ---@return string
 local function sha_from_entry(entry)
-    local short = entry:match("^%[.%]%s(%x+)")
+    local short = entry:match("^...%s(%x+)")
     for _, c in ipairs(state.remote.commits or {}) do
         if c.sha:sub(1, #short) == short then
             return c.sha
