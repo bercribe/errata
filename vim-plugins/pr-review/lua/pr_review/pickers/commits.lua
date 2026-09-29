@@ -89,7 +89,7 @@ function M.open()
             },
             ["ctrl-y"] = {
                 fn = function(selected)
-                    vim.fn.setreg('+', sha_from_entry(selected[1]))
+                    vim.fn.setreg('+', sha_from_entry(selected[1]):sub(1, 8))
                 end,
                 exec_silent = true,
             }
