@@ -71,16 +71,19 @@ function M.open()
         get_contents(left, right, fzf_cb)
     end, {
         prompt = is_full and "PR Files> " or string.format("PR Files (%s..%s)> ", left:sub(1, 8), right:sub(1, 8)),
+        fzf_opts = { ["--multi"] = true },
         actions = {
             ["default"] = function(selected)
                 diff.open(left, right, path_from_entry(selected[1]))
             end,
             ["left"] = {
                 fn = function(selected)
-                    local path = path_from_entry(selected[1])
-                    local ok, err = state.mark_file_read(path, left, right)
-                    if not ok then
-                        vim.notify("pr_review: " .. err, vim.log.levels.WARN)
+                    for _, entry in ipairs(selected) do
+                        local path = path_from_entry(entry)
+                        local ok, err = state.mark_file_read(path, left, right)
+                        if not ok then
+                            vim.notify("pr_review: " .. err, vim.log.levels.WARN)
+                        end
                     end
                 end,
                 reload = true,
@@ -93,10 +96,12 @@ function M.open()
                 -- that matter -- just this range's slice becomes unread
                 -- again)
                 fn = function(selected)
-                    local path = path_from_entry(selected[1])
-                    local ok, err = state.mark_file_unread(path, left)
-                    if not ok then
-                        vim.notify("pr_review: " .. err, vim.log.levels.WARN)
+                    for _, entry in ipairs(selected) do
+                        local path = path_from_entry(entry)
+                        local ok, err = state.mark_file_unread(path, left)
+                        if not ok then
+                            vim.notify("pr_review: " .. err, vim.log.levels.WARN)
+                        end
                     end
                 end,
                 reload = true,

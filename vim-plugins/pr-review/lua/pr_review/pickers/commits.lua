@@ -92,6 +92,12 @@ function M.open()
                 end,
                 reload = true,
             },
+            ["ctrl-y"] = {
+                fn = function(selected)
+                    vim.fn.setreg('+', sha_from_entry(selected[1]))
+                end,
+                exec_silent = true,
+            }
         },
     })
 end
