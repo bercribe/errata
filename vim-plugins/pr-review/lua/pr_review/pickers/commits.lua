@@ -67,12 +67,7 @@ function M.open()
                     return commit_index(a) < commit_index(b)
                 end)
 
-                local left, right
-                if #shas == 1 then
-                    left, right = shas[1] .. "^", shas[1]
-                else
-                    left, right = shas[1], shas[#shas]
-                end
+                local left, right = shas[1] .. "^", shas[#shas]
                 range.set(left, right)
                 require("pr_review.pickers.files").open()
             end,
