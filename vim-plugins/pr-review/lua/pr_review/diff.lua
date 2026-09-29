@@ -53,9 +53,11 @@ end
 ---@return integer bufnr
 local function open_scratch_side(win, rev, left_rev, right_rev, path, side, left_path, content_path)
     local bufnr = vim.api.nvim_create_buf(false, true)
+    local bufpath = content_path or path
     vim.api.nvim_win_set_buf(win, bufnr)
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, show_lines(rev, content_path or path))
-    vim.bo[bufnr].filetype = detect_filetype(content_path or path)
+    vim.wo[win].statusline = string.format("%s:%s", rev:sub(1, 8), bufpath)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, show_lines(rev, bufpath))
+    vim.bo[bufnr].filetype = detect_filetype(bufpath)
     vim.bo[bufnr].buftype = "nofile"
     vim.bo[bufnr].modifiable = false
     tag_buffer(bufnr, side, left_rev, right_rev, path, left_path)
