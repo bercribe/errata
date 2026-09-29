@@ -84,6 +84,14 @@ function M.open(left_rev, right_rev, path)
     local right_win, left_win
     if diff_wins.right and vim.api.nvim_win_is_valid(diff_wins.right) and diff_wins.left and vim.api.nvim_win_is_valid(diff_wins.left) then
         right_win, left_win = diff_wins.right, diff_wins.left
+        assert(left_win and right_win)
+        -- need to run diffoff to prevent buggy behavior on file transition
+        vim.api.nvim_win_call(left_win, function()
+            vim.cmd.diffoff()
+        end)
+        vim.api.nvim_win_call(right_win, function()
+            vim.cmd.diffoff()
+        end)
     else
         right_win = vim.api.nvim_get_current_win()
         vim.api.nvim_set_current_win(right_win)
@@ -92,7 +100,6 @@ function M.open(left_rev, right_rev, path)
         vim.api.nvim_set_current_win(right_win)
         diff_wins.right, diff_wins.left = right_win, left_win
     end
-    assert(right_win)
 
     local head = git.head_sha()
     local right_bufnr
