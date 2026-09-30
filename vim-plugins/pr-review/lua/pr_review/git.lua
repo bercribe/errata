@@ -23,6 +23,12 @@ function M.head_sha()
 end
 
 ---@param a string
+---@return string|nil, string|nil
+function M.resolve_sha(a)
+    return run({ "rev-parse", a })
+end
+
+---@param a string
 ---@param b string
 ---@return string|nil, string|nil
 function M.merge_base(a, b)

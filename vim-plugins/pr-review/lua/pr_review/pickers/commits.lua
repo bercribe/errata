@@ -5,6 +5,7 @@
 -- range instead of the full PR.
 local state = require("pr_review.state")
 local range = require("pr_review.range")
+local git = require("pr_review.git")
 
 local M = {}
 
@@ -67,7 +68,8 @@ function M.open()
                     return commit_index(a) < commit_index(b)
                 end)
 
-                local left, right = shas[1] .. "^", shas[#shas]
+                local relative_left = shas[1] .. "^"
+                local left, right = git.resolve_sha(relative_left) or relative_left, shas[#shas]
                 range.set(left, right)
                 require("pr_review.pickers.files").open()
             end,

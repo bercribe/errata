@@ -1,6 +1,7 @@
 -- fzf-lua picker for your own not-yet-submitted draft comments. `ctrl-e`
 -- edits (reopens the compose buffer prefilled); `ctrl-x` deletes.
 local state = require("pr_review.state")
+local git = require("pr_review.git")
 
 local M = {}
 
@@ -40,7 +41,9 @@ function M.open()
                 if not c then
                     return
                 end
-                require("pr_review.diff").open(c.commit_id .. "^", c.commit_id, c.path)
+                local relative_left = c.commit_id .. "^"
+                local left = git.resolve_sha(relative_left) or relative_left
+                require("pr_review.diff").open(left, c.commit_id, c.path)
             end,
             ["ctrl-e"] = function(selected)
                 local idx = index_from_entry(selected[1])
