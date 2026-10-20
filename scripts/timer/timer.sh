@@ -12,6 +12,6 @@ if command -v systemctl &>/dev/null; then
     systemd-run --user --unit="user-timer-$1" --description="$1 user timer" --on-active="$1" --timer-property=AccuracySec=1s --setenv="PATH=$PATH" bash -c "notify 'timer complete' '$1'; sfx ringaling"
 else
     sleep "$1"
-    sfx ringaling
     notify 'timer complete' "$1"
+    sfx ringaling
 fi
